@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useTable, useSortBy } from 'react-table'
 
 //const worlds = {"Active":["489","507","491","359","490","505","488","336","486","481","332","317","353","496","508","492","464","386","480","482","358","331","395","344","355","506"],"Upcoming":["495","479","494","509","484","357","493","323","485","363","364","354","344","303","477","307","518","487","353"]}
@@ -19,6 +18,8 @@ componentes:
   app: maneja los.. estados? idk
 
 
+---
+a las 8 pm la aplicacion era el comentario de arriba, ahora a las 7:30 am es un lindo monstruito
 
 */
 
@@ -28,13 +29,13 @@ componentes:
 function ScoutedWorldsList({ currentScoutedWorldList, onListUpdate }) {
     return (
       <div>
-      <button onClick={() => onListUpdate()}>update wuorlds</button>
         {Object.entries(currentScoutedWorldList).map(([key, value]) => (
           <div key={key}>
             <h2>{key}</h2>
             <p>{value.join(", ")}</p>
           </div>
         ))}
+      <button onClick={() => onListUpdate()}>update wuorlds</button>  
       </div>
     );
   }
@@ -71,10 +72,10 @@ function ScoutingForm({ onScoutStar, currentScoutedWorldList }) {
   <label htmlFor="w">World:</label>
   <input type="number" id="w" name="World" onChange={handleInfoChange}/><br/>
   
-  <label htmlFor="hours">Hours until:</label>
+  <label htmlFor="hours">Hours:</label>
   <input type="number" id="hours" name="Hours" onChange={handleInfoChange}/><br/>
 
-  <label htmlFor="mins">Minutes until:</label>
+  <label htmlFor="mins">Mins:</label>
   <input type="number" id="mins" name="Minutes" onChange={handleInfoChange}/><br/>
 
   <label htmlFor="region">Region:</label>
@@ -115,16 +116,8 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
         matches.push(data[i]['World'].toString())
       };
   }
-  }, [data]);
+  }, [data, currentScoutedWorldList]);
 
-  useEffect(() => {
-    const matches = []
-    for (let i = 0; i < data.length; i++) {
-      if (currentScoutedWorldList["Active"].includes((data[i]['World'].toString())) || currentScoutedWorldList["Upcoming"].includes((data[i]['World'].toString()))) {
-        console.log('Found a match!');
-        matches.push(data[i]['World'].toString())
-      };
-  }}, [currentScoutedWorldList]);
 
   const {
     getTableProps,
@@ -141,12 +134,11 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
   );
 
 
-  function handleRemove(id){
-    console.log(id)
-    const index = tableData.findIndex(row => row.id === id);
+  function handleRemove(rowObj){
+    const index = tableData.findIndex(row => row === rowObj.original);
     const newData = [...tableData];
     newData.splice(index, 1);
-   // setTableData(newData);
+    setTableData(newData);
     updateTableData(newData);
   }
   
@@ -157,8 +149,6 @@ function printShit(asd){
   return (
     <table {...getTableProps()}>
       <thead>
-      <button onClick={() => printShit(tableData)}>tableData</button>
-      <button onClick={() => printShit(data)}>data</button>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
@@ -182,7 +172,7 @@ function printShit(asd){
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
               })}
               <td>
-                <button onClick={() => handleRemove(row.id)}>X</button>
+                <button className="remove-button" onClick={() => handleRemove(row)}>X</button>
               </td>
             </tr>
           );
@@ -222,34 +212,41 @@ function App() {
   function updateScoutedWorldList(){
     fetch('http://localhost:5000/data')
     .then(response => response.json())
-    .then(data => setScoutedWorldList(data))
+    .then(data =>{
+      data.Active.sort();
+      data.Upcoming.sort();
+      setScoutedWorldList(data);
+      console.log(data);
+    }
+    )
+    
     .catch(error => console.error(error))
     
-  }//pasar esta funcion as prop a tu worldLister y llamarla periodicamente con useEffect
-  //tambien le pasarias el estado de worldList xd para buildea rla list
+  }
 
-
-//definir aca: update self scouted worldlist from starSettings parameter
-//pasar as prop to scoutingForm
-//form onSubmit={onScoutStar(starInfo)}
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <>
+    <div className="app-container">
+      <div className="sidebar">
         <ScoutedWorldsList onListUpdate={updateScoutedWorldList} currentScoutedWorldList={scoutedWorldList} />
+        </div>
+        <div className="content-container">
+        <div className="form-container">
         <ScoutingForm onScoutStar={updateStarInfo} currentScoutedWorldList={scoutedWorldList}/>
+        </div>
+        <div className="visualizer-container">    
         <SelfStarTable
   data={selfStarList}
   columns={columns}
   sortable={true}
   defaultPageSize={10}
   updateTableData={setSelfStarList}
-  currentScoutedWorldList={scoutedWorldList}
-/>
-
-      </header>
+  currentScoutedWorldList={scoutedWorldList}/>
+</div>
+</div>
     </div>
+    </>
   );
 }
 

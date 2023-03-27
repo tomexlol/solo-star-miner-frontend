@@ -1,38 +1,96 @@
-.App {
+body{
+  background-image: url("star.png");
+  background-size: 400px 400px;
+  background-blend-mode: normal;
+  background-color: #0a0a0a;
+  margin: 25px;
+  padding: 10px;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  color: #435b65;
+  overflow: hidden;
+}
+
+label {
+  text-align: left;
+  margin-right: 10px;
+  width: 100px;
+}
+
+input,
+textarea {
+  width: 100px;
+}
+
+select {
+  width: 200px;
+}
+
+.sidebar {
+  width: 150px;
   text-align: center;
+  color: #526972;
+  border: 1px solid #435b65;
+  padding: 3px;
+  height:100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.content-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin-left: 30px; /* adjust as needed */
+  margin-top: 0px;
+  background-color:#0a0a0a;
+  box-sizing: border-box;
+  height:100%;
 }
 
-.App-link {
-  color: #61dafb;
+.form-container {
+  text-align: center;
+  margin-bottom: 20px; /* adjust as needed */
+  border: 1px solid #526972;
+  padding: 15px;
+  padding-bottom: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.visualizer-container {
+  flex-grow: 1;
+  text-align: center;
+  border: 1px solid #526972;
+  color: #6e7b84;
+}
+.visualizer-container tr:nth-child(odd) {
+  background-color: #3F3F3F;
+}
+.visualizer-container tr:nth-child(even) {
+  background-color: #4C4C4C;
+}
+
+
+.remove-button{
+  border-radius: 10px;
+  background-color:#526972;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #526972;
+}
+
+input[type="submit"] {
+  color: #000004;
+  background-color: #526972;
+  box-shadow: none;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #526972;
+  margin-top:10px
+}
+
+#region {
+  width: 150px
 }
