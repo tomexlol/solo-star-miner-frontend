@@ -193,6 +193,7 @@ function App() {
   const [selfStarList, setSelfStarList] = useState([]);
 
   function updateSelfStarList(newSelfStar){
+    // eslint-disable-next-line no-unused-vars
     const oldList = selfStarList;
     setSelfStarList(oldList => [...oldList, newSelfStar]);
   }
