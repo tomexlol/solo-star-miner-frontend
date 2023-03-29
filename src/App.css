@@ -94,3 +94,7 @@ input[type="submit"] {
 #region {
   width: 150px
 }
+
+#starTable .fucked-world{
+  background-color: red;
+}

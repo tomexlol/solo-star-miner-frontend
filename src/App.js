@@ -107,6 +107,7 @@ const columns = [  {    Header: 'World',    accessor: 'World'  },  {    Header: 
 
 function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList}) {
   const [tableData, setTableData] = useState([]);
+  const [fuckedWorlds, setFuckedWorlds] = useState([]);
 
   useEffect(() => {
     setTableData(data);
@@ -116,7 +117,8 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
         console.log('Found a match!');
         matches.push(data[i]['World'].toString())
       };
-  }
+  } console.log(matches);
+  setFuckedWorlds(matches);
   }, [data, currentScoutedWorldList]);
 
 
@@ -149,7 +151,7 @@ function printShit(asd){
 }
 
   return (
-    <table {...getTableProps()}>
+    <table id="starTable" {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -168,8 +170,10 @@ function printShit(asd){
       <tbody {...getTableBodyProps()}>
         {rows.map((row) => {
           prepareRow(row);
+          const isFucked = fuckedWorlds.includes(row.cells[0].value);
+          console.log(row.cells[0].value)
           return (
-            <tr {...row.getRowProps()}>
+            <tr {...row.getRowProps()} className={isFucked ? "fucked-world" : ""}>
               {row.cells.map((cell) => {
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
               })}
