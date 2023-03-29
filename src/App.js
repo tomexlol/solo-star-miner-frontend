@@ -7,19 +7,20 @@ import { useTable, useSortBy } from 'react-table'
 
 
 /*
-componentes:
-  lista de muertos: def(levanta de mi api, returnea div con lista)
-    pasa su lista para arriba => mi form y mi visualizer necesitan la lista para sus weas
-    boton de "reload"? o que se relodee cada 5 min fuck you? si es lo mismo igual, no? hay forma de saber
-  form: insertas tu scout y lo agregas a la lista.
-     lee tu scout y lo compara con la lista de muertos y te avisa si estas muerto
-  visualizer: muestra tu lista. calcula las horas (time remaining?). botones: remover+ver landings region
-      compara tu lista con la de los muertos, te avisa si estas muerto
-  app: maneja los.. estados? idk
+todo:
+[]warnearte si matchean los selfscouteds con los normis
+  ponerle una clase en particular si es scouted en el return de los tr's, hacer esa clase de otro color
+  agregar un boton de "remove fucked stars"
+[]guardar el estado de la tabla en localstorage y levantarlo
+  esto puede ser mas dificil de lo que parece xddd
+  not rly tengo un tableData re armado y re picante
+  guardar tableData y levantarlo en first run con un useEffect sin hook
+[]el tiempo en hrs:mins no sirve mostrarlo pq empieza a tickear y fuistes
+  calcular landingTime y mostrar eso / howLongToLandingTime (para sortear by)
 
+[]testearla minando un rato (a ver si hay algo que digas uu esto estaria piolin)
 
----
-a las 8 pm la aplicacion era el comentario de arriba, ahora a las 7:30 am es un lindo monstruito
+future: agregar mapas.png para cada region/linkear a mapas de la wiki
 
 */
 
