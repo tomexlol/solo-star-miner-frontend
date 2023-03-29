@@ -11,7 +11,7 @@ todo:
 []warnearte si matchean los selfscouteds con los normis
   ponerle una clase en particular si es scouted en el return de los tr's, hacer esa clase de otro color
   agregar un boton de "remove fucked stars"
-[]guardar el estado de la tabla en localstorage y levantarlo
+[X]guardar el estado de la tabla en localstorage y levantarlo
   esto puede ser mas dificil de lo que parece xddd
   not rly tengo un tableData re armado y re picante
   guardar tableData y levantarlo en first run con un useEffect sin hook
@@ -143,6 +143,7 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
     updateTableData(newData);
   }
   
+// eslint-disable-next-line no-unused-vars
 function printShit(asd){
   console.log(asd);
 }
@@ -194,10 +195,23 @@ function App() {
 
   function updateSelfStarList(newSelfStar){
     // eslint-disable-next-line no-unused-vars
-    const oldList = selfStarList;
+    const oldList = [...selfStarList];
     setSelfStarList(oldList => [...oldList, newSelfStar]);
+    console.log(selfStarList)
+  }
+  
+  const handleRemove = (starList) => {
+    setSelfStarList(starList);
+    localStorage.setItem("tableData", JSON.stringify(starList))  
   }
 
+  useEffect(() => {
+    console.log("i am happening")
+    let parsed = JSON.parse(localStorage.getItem("tableData"))
+    console.log(parsed)
+    console.log(typeof parsed)
+    setSelfStarList(parsed);
+  }, [])  
 
 
   function updateStarInfo(event, newStarInfo){
@@ -206,6 +220,7 @@ function App() {
     updateSelfStarList(newStarInfo);
     console.log(starInfo);
     console.log(selfStarList);
+    localStorage.setItem("tableData", JSON.stringify(selfStarList))    
   }
   
   
@@ -243,7 +258,7 @@ function App() {
   columns={columns}
   sortable={true}
   defaultPageSize={10}
-  updateTableData={setSelfStarList}
+  updateTableData={handleRemove}
   currentScoutedWorldList={scoutedWorldList}/>
 </div>
 </div>
