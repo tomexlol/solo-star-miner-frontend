@@ -8,7 +8,7 @@ import { useTable, useSortBy } from 'react-table'
 
 /*
 todo:
-[]warnearte si matchean los selfscouteds con los normis
+[X]warnearte si matchean los selfscouteds con los normis
   ponerle una clase en particular si es scouted en el return de los tr's, hacer esa clase de otro color
   agregar un boton de "remove fucked stars"
 [X]guardar el estado de la tabla en localstorage y levantarlo
