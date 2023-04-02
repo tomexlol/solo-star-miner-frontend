@@ -98,3 +98,7 @@ input[type="submit"] {
 #starTable .fucked-world{
   background-color: red;
 }
+
+#starTable .landed-world{
+  background-color: green;
+}
