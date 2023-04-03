@@ -20,9 +20,9 @@ todo:
 
 []testearla minando un rato (a ver si hay algo que digas uu esto estaria piolin)
 
-[]clean up variable names/code layout
+[X]clean up variable names/code layout
 
-[]fix css especially for fucked+landed worlds
+[X]fix css especially for fucked+landed worlds
 
 
 future: agregar mapas.png para cada region/linkear a mapas de la wiki
@@ -31,10 +31,13 @@ future: agregar mapas.png para cada region/linkear a mapas de la wiki
 
 
 
-
+//component 1: list of scouted worlds grabbed from backend api
 function ScoutedWorldsList({ currentScoutedWorldList }) {
     return (
       <div>
+        <h3>Scouted Worlds</h3>
+        <div className="titlebar-container"></div>
+        <hr color="#435b65"></hr>
         {Object.entries(currentScoutedWorldList).map(([key, value]) => (
           <div key={key}>
             <h2>{key}</h2>
@@ -46,24 +49,30 @@ function ScoutedWorldsList({ currentScoutedWorldList }) {
   }
 
 
+
+
+//component 2: form for adding your own stars
 function ScoutingForm({ onScoutStar, currentScoutedWorldList }) {
-  
   const [starInfo, setStarInfo] = useState({"World": 0, "Hours": 0, "Minutes": 0, "Region": ""});
 
-  
+  //stages info for submit and also handles warning div visibility (for pre scouted worlds)
   const handleInfoChange = (event) => {
     const warnDiv = document.getElementsByClassName("scouted-warning-container")[0];
     const { name, value } = event.target;
     console.log(event.target)
-    setStarInfo((prevStarInfo) => ({...prevStarInfo,[name]: value,}));
+    setStarInfo((prevStarInfo) => ({...prevStarInfo,[name]: value,})); //this part adds the landing time data, kind of unnecesary this early but oh well
     if (name === "World" && (currentScoutedWorldList["Active"].includes(value) || currentScoutedWorldList["Upcoming"].includes(value))){
-      warnDiv.style.display = "inline"
+      warnDiv.style.display = "block"
+      warnDiv.innerHTML = `World ${value} is already scouted by Star Miners!!!`
     } else if (name === "World" && !(currentScoutedWorldList["Active"].includes(value) || currentScoutedWorldList["Upcoming"].includes(value)))
     {
       warnDiv.style.display = "none"
     }
   };
 
+
+
+  //form return
   return (
 <form onSubmit={(event) => onScoutStar(event, starInfo)}>
   <label htmlFor="w">World:</label>
@@ -72,13 +81,13 @@ function ScoutingForm({ onScoutStar, currentScoutedWorldList }) {
   <label htmlFor="hours">Hours:</label>
   <input type="number" id="hours" name="Hours" onChange={handleInfoChange}/><br/>
 
-  <label htmlFor="mins">Mins:</label>
+  <label htmlFor="mins" id="minsLabel">Mins:</label>
   <input type="number" id="mins" name="Minutes" onChange={handleInfoChange}/><br/>
 
   <label htmlFor="region">Region:</label>
   <select id="region" name="Region" onChange={handleInfoChange}>
     <option value="asgarnia">Asgarnia</option>
-    <option value="fremmenik">Fremmenik Lands/ Lunar Isle</option>
+    <option value="fremmenik">Fremmenik Lands / Lunar Isle</option>
     <option value="karamja">Karamja / Crandor</option>
     <option value="feldip">Feldip Hills / Isle of Souls</option>
     <option value="fossil">Fossil Island / Mos Le'Harmless</option>
@@ -94,19 +103,23 @@ function ScoutingForm({ onScoutStar, currentScoutedWorldList }) {
   </select><br/>
 
   <input type="submit" value="Add Star"/>
+
 </form>
   );
 }
 
 
-const columns = [  {    Header: 'Minutes Until',    accessor: 'In'  }, {    Header: 'Landing Time',    accessor: 'Time'  }, {    Header: 'World',    accessor: 'World'  },  {    Header: 'Region',    accessor: 'Region'  }];
 
+
+//component 3, the table with your own stars
 function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList, updateScouteds}) {
   const [tableData, setTableData] = useState([]);
   const [fuckedWorlds, setFuckedWorlds] = useState([]);
   const [currentMinute, setCurrentMinute] = useState(new Date().getMinutes());
-  const [landedStars, setLandedStars] = useState([]);
+  const [landedWorlds, setLandedWorlds] = useState([]);
 
+
+  //1 time run useEffect. sets the auto updating every 60s for both scouted worlds and the table (via currentMinute dependency)
   useEffect(() => {
     updateScouteds();
     const interval = setInterval(() => {
@@ -119,19 +132,24 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
   }, []);
 
 
+
+  //main useEffect, updates table data every minute as called by above and also whenever data or the scouted world list changes
+  //updates both Fucked and Landed worlds.
   useEffect(() => {
     console.log("main useeffect called");
     if (data !== null){
       for (const star of data){
         const now = new Date ();
+        const lastUpdated = document.getElementsByClassName("titlebar-container")[0];
+        lastUpdated.innerHTML = `Last updated: ${(now.getHours()).toString().padStart(2, "0")}:${(now.getMinutes()).toString().padStart(2, "0")}:${(now.getSeconds()).toString().padStart(2,"0")}`
         now.setSeconds(0);
         const landingTime = new Date(star["LandingDateFull"])
-        if (landingTime < now && !(landedStars.includes(star["World"].toString()))) {
-            const newLandedStars = [...landedStars]
-            newLandedStars.push(star["World"].toString())
-            setLandedStars(newLandedStars)
+        if (landingTime < now && !(landedWorlds.includes(star["World"].toString()))) {
+            const newLandedWorlds = [...landedWorlds]
+            newLandedWorlds.push(star["World"].toString())
+            setLandedWorlds(newLandedWorlds)
             console.log(`${star["World"]} is landed`);
-            console.log(newLandedStars)
+            console.log(newLandedWorlds)
         }
         const diffInMs = landingTime - now;
         const diffInMinutes = Math.round(diffInMs / 1000 / 60);
@@ -148,9 +166,9 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
     setFuckedWorlds(matches);
     }
 
-  }, [data, currentScoutedWorldList, currentMinute, landedStars]);
+  }, [data, currentScoutedWorldList, currentMinute, landedWorlds]);
 
-
+//here the react-table sorcery begins
   const {
     getTableProps,
     getTableBodyProps,
@@ -165,28 +183,24 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
     useSortBy
   );
 
-
+  //handles removing rows from the table (passed to X buttons). Also removes from landedStars if it was landed.
   function handleRemove(rowObj){
     console.log(rowObj.original.World)
     const index = tableData.findIndex(row => row === rowObj.original);
     const newData = [...tableData];
-    if (landedStars.includes(rowObj.original.World.toString())){
-      console.log("removed a landerino'd")
-      const newLandedStars = [...landedStars]
-      const index = newLandedStars.indexOf(rowObj.original.World.toString());
-      console.log(index);
-      newLandedStars.splice(index, 1);
-      setLandedStars(newLandedStars);
-      console.log(newLandedStars);
+    if (landedWorlds.includes(rowObj.original.World.toString())){
+      const newLandedWorlds = [...landedWorlds]
+      const index = newLandedWorlds.indexOf(rowObj.original.World.toString());
+      newLandedWorlds.splice(index, 1);
+      setLandedWorlds(newLandedWorlds);
     }
-    console.log(index)
     newData.splice(index, 1);
     setTableData(newData);
     updateTableData(newData);
   }
   
 
-
+  //SelfStarTable return. builds the table. className's rows based on fucked/landed
   return (
     <table id="starTable" {...getTableProps()}>
       <thead>
@@ -208,8 +222,7 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
         {rows.map((row) => {
           prepareRow(row);
           const isFucked = fuckedWorlds.includes(row.cells[2].value);
-          const isLanded = landedStars.includes(row.cells[2].value.toString());
-          //console.log(row.cells[0].value)
+          const isLanded = landedWorlds.includes(row.cells[2].value.toString());
           return (
             <tr {...row.getRowProps()} className={isFucked ? "fucked-world" : isLanded ? "landed-world" : ""}>
               {row.cells.map((cell) => {
@@ -229,44 +242,50 @@ function SelfStarTable({ data, columns, updateTableData, currentScoutedWorldList
 
 
 
-
+//main app
 function App() {
   const [scoutedWorldList, setScoutedWorldList] = useState({"Active":[],"Upcoming":[]});
   const [selfStarList, setSelfStarList] = useState([]);
+  const columns = [  {    Header: 'Minutes Until',    accessor: 'In'  }, {    Header: 'Landing Time',    accessor: 'Time'  }, {    Header: 'World',    accessor: 'World'  },  {    Header: 'Region',    accessor: 'Region'  }];
 
 
-
+  //updates list that is passed to SelfStarTable as "data". called by updateStarInfo
   function updateSelfStarList(newSelfStar){
     const currentList = selfStarList ?? [];
     setSelfStarList(oldList => [...currentList, newSelfStar]);
   }
-  
-  const handleRemove = (starList) => {
+
+  //called when removing a row from the table, saves new data to localStorage as well
+  const handleTableUpdate = (starList) => {
     setSelfStarList(starList);
     localStorage.setItem("tableData", JSON.stringify(starList))  
   }
 
+
+  //loads table data from localStorage on first app mount
   useEffect(() => {
     let parsed = JSON.parse(localStorage.getItem("tableData"))
     setSelfStarList(parsed);
   }, [])  
 
 
-
-  function updateStarInfo(event, newStarInfo){
+  //called when submit form. calculates and adds landing time to star. calls updateSelfStarList and saves new list to local storage.
+  function handleSubmitStarInfo(event, newStarInfo){
     event.preventDefault();
     const starHours = Number(newStarInfo["Hours"])
     const starMinutes = Number(newStarInfo["Minutes"])
 
     const dateNow = new Date();
-    dateNow.setSeconds(0);
     const nowHours = dateNow.getHours();
     const nowMinutes = dateNow.getMinutes();
 
     const landingDate = new Date();
-    landingDate.setSeconds(0);
     landingDate.setHours((nowHours + starHours))
     landingDate.setMinutes((nowMinutes + starMinutes))
+
+    dateNow.setSeconds(0);
+    landingDate.setSeconds(0); //get rid of seconds to prevent fuckery on the landing times
+
 
     const landingTimeString = `${landingDate.getHours().toString().padStart(2, '0')}:${landingDate.getMinutes().toString().padStart(2, '0')}`
 
@@ -274,15 +293,13 @@ function App() {
     const minutesUntil = Math.round(msUntil / 1000 / 60);
     
     let newStarInfoWithTime = {...newStarInfo,"In": minutesUntil, "Time": landingTimeString, "LandingDateFull": landingDate}
-    console.log(newStarInfoWithTime);
 
     updateSelfStarList(newStarInfoWithTime);
-
-    localStorage.setItem("tableData", JSON.stringify(selfStarList))    
+    localStorage.setItem("tableData", JSON.stringify(selfStarList))    //this could be done on updateSelfStarList
   }
   
 
-  
+  //grabs ScoutedWorldList from the API. called every 60s by useEffects.
   function updateScoutedWorldList(){
     fetch('http://localhost:5000/data')
     .then(response => response.json())
@@ -298,17 +315,17 @@ function App() {
     
   }
 
-
+  //main app return
   return (
     <>
     <div className="app-container">
       <div className="sidebar">
         <ScoutedWorldsList currentScoutedWorldList={scoutedWorldList} />
-        </div>
+        </div>   
         <div className="content-container">
         <div className="form-container">
-        <ScoutingForm onScoutStar={updateStarInfo} currentScoutedWorldList={scoutedWorldList}/>
-        <div className="scouted-warning-container">tu world esta cogido!</div>
+        <ScoutingForm onScoutStar={handleSubmitStarInfo} currentScoutedWorldList={scoutedWorldList}/>
+        <div className="scouted-warning-container"></div>
         </div>
         <div className="visualizer-container">    
         <SelfStarTable
@@ -316,7 +333,7 @@ function App() {
   columns={columns}
   sortable={true}
   defaultPageSize={10}
-  updateTableData={handleRemove}
+  updateTableData={handleTableUpdate}
   currentScoutedWorldList={scoutedWorldList}
   updateScouteds={updateScoutedWorldList}/>
 </div>
