@@ -1,4 +1,4 @@
-# Solo Star Miner - A tool for Solo Shooting Star Miners in OSRS
+# Solo Star Miner - Tool for Solo Shooting Star Miners [OSRS]
 Live at https://www.tomexlol.com/ssm/
 ### Context: What are Shooting Stars in Old School Runescape?
 
