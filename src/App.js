@@ -301,7 +301,7 @@ function App() {
 
   //grabs ScoutedWorldList from the API. called every 60s by useEffects.
   function updateScoutedWorldList(){
-    fetch('http://tomexlol.pythonanywhere.com/data')
+    fetch('https://tomexlol.pythonanywhere.com/data')
     .then(response => response.json())
     .then(data =>{
       data.Active.sort();
