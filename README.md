@@ -1,4 +1,5 @@
-# Solo Star Miner
+# Solo Star Miner - A tool for Solo Shooting Star Miners in OSRS
+### Context: What are Shooting Stars in Old School Runescape?
 
 Shooting Stars are an activity in Old School Runescape in which a meteor falls from the sky approximately every two hours across every in-game server ("World"). 
 These appear as Crashed Stars that can be mined.
@@ -11,11 +12,13 @@ A decently sized star can last a single player around 2 to 3 hours. This means t
 
 This makes Shooting Stars an ideal "background activity", very doable as you work, study, or watch a movie.
 
-But there's a community of people dedicated to ruining this aspect of the activity completely. This community scouts most Worlds for their next star's location and they share all the scouted locations publically.
+### The issue: Star Miners community
+
+There's a community of people dedicated to ruining this aspect of the activity completely. This community scouts most Worlds for their next star's location and they share all the scouted locations publically.
 
 This means the stars that have been scouted by them are mined by a ton of people at once, which makes it so that as a Solo Miner you have to find a new star, and thus pay attention to the game, every 10 minutes instead of three hours - completely robbing your attention away from your primary activity.
 
-
+### The Solution: Solo Star Miner
 Solo Star Miner was created as a tool to help you dodge this community and mine in peace, solo.
 
 Using the Sheets API, it grabs the list of Worlds they scouted and it cross references against this list as you scout your own Worlds.
