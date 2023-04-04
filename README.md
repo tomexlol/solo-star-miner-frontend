@@ -6,7 +6,7 @@ These appear as Crashed Stars that can be mined.
 
 Players can use a telescope to find the approximate area and time of the next landing.
 
-Clicking the star only once will make your character mine it for up to 25 minutes without further interaction.
+Clicking the Crashed Star one time will make your character mine it for up to 25 minutes without any further clicks.
 
 A decently sized star can last a single player around 2 to 3 hours. This means that, if you find a good Solo Star, you can train your Mining skill for around 3 hours while clicking under 10 times.
 
